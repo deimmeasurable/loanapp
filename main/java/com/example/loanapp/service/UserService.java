@@ -1,14 +1,15 @@
 package com.example.loanapp.service;
 
 import com.example.loanapp.data.UserRequest;
+import com.example.loanapp.data.UserResponse;
 import com.example.loanapp.domain.User;
 
 import java.util.List;
 
 public interface UserService {
-    User createUser(UserRequest userRequest);
+    UserResponse createUser(UserRequest userRequest);
     List<User> getAllUsers();
-    User updateUser(Long id);
-    void deleteUser(Long id);
+    UserResponse updateUser(UserRequest userRequest);
+    UserResponse deleteUser(Long id);
     User getUserById(Long id);
 }

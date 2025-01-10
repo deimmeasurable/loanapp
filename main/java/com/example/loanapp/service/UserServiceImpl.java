@@ -1,6 +1,7 @@
 package com.example.loanapp.service;
 
 import com.example.loanapp.data.UserRequest;
+import com.example.loanapp.data.UserResponse;
 import com.example.loanapp.domain.User;
 import com.example.loanapp.respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public User createUser(UserRequest userRequest) {
+    public UserResponse createUser(UserRequest userRequest) {
         userRequest.setId(userRequest.getId());
         userRequest.setPhoneNumber(userRequest.getPhoneNumber());
         userRequest.setEmail(userRequest.getEmail());
@@ -31,7 +32,10 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRequest.getEmail());
         user.setPhoneNumber(userRequest.getPhoneNumber());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setMessage("user created");
+        return userResponse;
     }
 
     public User getUserByEmail(String email) {
@@ -39,18 +43,28 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void deleteUser(Long id) {
+    public UserResponse deleteUser(Long id) {
         userRepository.deleteById(id);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setMessage("user deleted");
+        return userResponse;
     }
-    public User updateUser(Long id) {
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserResponse updateUser(UserRequest userRequest) {
+        User existingUser = userRepository.findById(userRequest.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+UserRequest user=new UserRequest();
+user.setId(userRequest.getId());
+user.setEmail(userRequest.getEmail());
+        user.setPhoneNumber(user.getPhoneNumber());
+user.setPassword(userRequest.getPassword());
 
-
-        existingUser.setUsername(user.getUsername());
+        existingUser.setId(user.getId());
         existingUser.setEmail(user.getEmail());
         existingUser.setPhoneNumber(user.getPhoneNumber());
-        existingUser.setPassword(user.getPassword());
-        return userRepository.save(existingUser);
+        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(existingUser);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setMessage("user updated");
+        return userResponse;
     }
 
     public User getUserById(Long id) {

@@ -1,22 +1,24 @@
 package com.example.loanapp;
 
 import com.example.loanapp.data.UserRequest;
+import com.example.loanapp.data.UserResponse;
 import com.example.loanapp.domain.User;
 import com.example.loanapp.service.UserService;
 import com.example.loanapp.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+
 import javax.annotation.processing.SupportedAnnotationTypes;
 import java.util.Arrays;
 import java.util.List;
 
-import static javax.management.Query.times;
-import static jdk.internal.org.objectweb.asm.util.CheckClassAdapter.verify;
+
+import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
-class LoanAppApplicationTests {
-    @Autowired
+public class LoanAppApplicationTests {
+
 private UserService userService;
     @Test
     void setUp() {
@@ -30,27 +32,26 @@ private UserService userService;
         user.setPassword("07064532412");
 
 
-        User createdUser = userService.createUser(user);
-        assertEquals("test@example.com", createdUser.getEmail());
+        UserResponse createdUser = userService.createUser(user);
+        assertEquals("user created", createdUser.getMessage());
     }
     @Test
     public void testGetAllUsers() {
-        when(userService.getAllUsers()).thenReturn(Arrays.asList(user));
 
-        ResponseEntity<List<User>> response = userController.getAllUsers();
+List<User> response = userService.getAllUsers();
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1, response.getBody().size());
+
+        assertEquals(1, response.size());
 
 
     }
     @Test
     public void testDeleteUser() {
-        doNothing().when(userService).deleteUser(anyLong());
 
-        ResponseEntity<Void> response = userService.deleteUser(1L);
 
-        assertEquals(204, response.getStatusCodeValue());
+        UserResponse response = userService.deleteUser(1L);
+
+        assertEquals("user deleted", response);
 
     }
 }
